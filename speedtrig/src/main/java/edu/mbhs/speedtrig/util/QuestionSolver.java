@@ -7,12 +7,6 @@ package edu.mbhs.speedtrig.util;
 public class QuestionSolver {
 
     /**
-     * Precision used to verify that a raw value is equivalent to a mathematical expression
-     * such as 3.14159 == "π"
-     */
-    private static double precision = 0.0001;
-
-    /**
      * Solves a simple trig question and returns a String answer
      * @param question question such as "cos(π/3)" using any of the 6 regular trig functions
      *                 or their inverse functions (such as "arccos")
@@ -200,7 +194,6 @@ public class QuestionSolver {
             boolean flip = false;   // whether the operation is a reciprocal trig operation (sec, csc, cot)
             double operand;         // numerical value passed into the trig function
             double badAnswer = 0;   // raw value of answer (as opposed to String form)
-            String goodAnswer = ""; // String form of answer
 
             // example: operation="csc", strOperand="3π/4"
             String operation = question.substring(0,3);
@@ -255,47 +248,60 @@ public class QuestionSolver {
                     break;
             }
 
-            // brute-force compare to known possible answers and build good answers
-            // +- 1
-            if (Math.abs(badAnswer-1) < precision ||
-                    Math.abs(badAnswer+1) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "1";
-                // +- root 3 over 2
-            else if (Math.abs(badAnswer-Math.sqrt(3)/2) < precision ||
-                    Math.abs(badAnswer+Math.sqrt(3)/2) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "√3/2";
-                // +- root 2 over 2
-            else if (Math.abs(badAnswer-Math.sqrt(2)/2) < precision ||
-                    Math.abs(badAnswer+Math.sqrt(2)/2) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "√2/2";
-                // +- 1/2
-            else if (Math.abs(badAnswer-0.5) < precision ||
-                    Math.abs(badAnswer+0.5) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "1/2";
-                // 0
-            else if (Math.abs(badAnswer) < precision)
-                goodAnswer = "0";
-                // +- root 3 over 3
-            else if (Math.abs(badAnswer-Math.sqrt(3)/3) < precision ||
-                    Math.abs(badAnswer+Math.sqrt(3)/3) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "√3/3";
-                // +- root 3
-            else if (Math.abs(badAnswer-Math.sqrt(3)) < precision ||
-                    Math.abs(badAnswer+Math.sqrt(3)) < precision)
-                goodAnswer = (Math.signum(badAnswer)==1 ? "" : "-") + "√3";
-                // DNE = tan(pi/2)
-            else if (badAnswer-10 > 0)
-                goodAnswer = "DNE";
-            else
-                goodAnswer = "ERROR";
-
-            // if it was a reciprocal function, reciprocate the answer
-            if (flip)
-                goodAnswer = flipFraction(goodAnswer);
-
-            return goodAnswer;
+            return getClosestAnswer(badAnswer, flip);
         }
 
+    }
+
+    public static String getClosestAnswer(double rawAnswer, boolean reciprocalFunction) {
+
+        /*
+         * Precision used to verify that a raw value is equivalent to a mathematical expression
+         * such as 3.14159 == "π"
+         */
+        final double precision = 0.0001;
+
+        String goodAnswer;
+
+        // brute-force compare to known possible answers and build good answers
+        // +- 1
+        if (Math.abs(rawAnswer-1) < precision ||
+                Math.abs(rawAnswer+1) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "1";
+            // +- root 3 over 2
+        else if (Math.abs(rawAnswer-Math.sqrt(3)/2) < precision ||
+                Math.abs(rawAnswer+Math.sqrt(3)/2) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "√3/2";
+            // +- root 2 over 2
+        else if (Math.abs(rawAnswer-Math.sqrt(2)/2) < precision ||
+                Math.abs(rawAnswer+Math.sqrt(2)/2) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "√2/2";
+            // +- 1/2
+        else if (Math.abs(rawAnswer-0.5) < precision ||
+                Math.abs(rawAnswer+0.5) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "1/2";
+            // 0
+        else if (Math.abs(rawAnswer) < precision)
+            goodAnswer = "0";
+            // +- root 3 over 3
+        else if (Math.abs(rawAnswer-Math.sqrt(3)/3) < precision ||
+                Math.abs(rawAnswer+Math.sqrt(3)/3) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "√3/3";
+            // +- root 3
+        else if (Math.abs(rawAnswer-Math.sqrt(3)) < precision ||
+                Math.abs(rawAnswer+Math.sqrt(3)) < precision)
+            goodAnswer = (Math.signum(rawAnswer)==1 ? "" : "-") + "√3";
+            // DNE = tan(pi/2)
+        else if (rawAnswer-10 > 0 || rawAnswer + 10 < 0)
+            goodAnswer = "DNE";
+        else
+            goodAnswer = "ERROR";
+
+        // if it was a reciprocal function, reciprocate the answer
+        if (reciprocalFunction)
+            goodAnswer = flipFraction(goodAnswer);
+
+        return goodAnswer;
     }
 
     /**
@@ -307,12 +313,15 @@ public class QuestionSolver {
     private static String flipFraction(String frac){
         String flipped = "";
 
-        if (frac.equals("0"))
-            return "DNE";
-        else if (frac.equals("DNE"))
-            return "0";
-        else if (frac.equals("-1") || frac.equals("1"))
-            return frac;
+        switch (frac) {
+            case "0":
+                return "DNE";
+            case "DNE":
+                return "0";
+            case "-1":
+            case "1":
+                return frac;
+        }
 
         if (frac.contains("/"))
             // what was in the denominator comes to the numerator

@@ -9,16 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.speedtrig.R;
-
-import java.io.IOException;
-
 /**
- * Created by suyhmed on 3/15/15.
+ * Activity for the learning page
+ * @author suyhmed
+ * Created on 3/15/15.
  */
 public class Learn extends BaseActivity {
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +34,16 @@ public class Learn extends BaseActivity {
         });
         //(END) URL for The Online Speed Trig Quiz Generator
 
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items); // load titles from strings.xml
+        findViewById(R.id.unit_circle_link).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Learn.this, UnitCircle.class));
+            }
+        });
 
-        navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);// load icons from
-        // strings.xml
+        String[] navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items); // load titles from strings.xml
+
+        TypedArray navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons); // load icons from strings.xml
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3f51b5")));
 

@@ -9,12 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.speedtrig.R;
-
 import edu.mbhs.speedtrig.util.QuestionSolver;
 
 public class FinalWindow extends Activity {
+
     private MediaPlayer streetFailed;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,23 +91,6 @@ public class FinalWindow extends Activity {
         startActivity(intent);
         finish();
     }
-
-	public String formatOutput(String q, String r, String c){
-		String outputString = q;
-		String spacing = mult(" ", (15-q.length())*2);
-		outputString += spacing + "\t" + r;
-		spacing = mult(" ", 24-r.length()*2);
-		outputString += spacing + "\t" + c;
-		return outputString;
-	}
-	
-	public String mult(String s, int num){
-		String endString = "";
-		for (int i = 1; i <= num; i++){
-			endString += s;
-		}
-		return endString;
-	}
 	
 	public void destroyActivity(View v){
 		finish();
@@ -127,10 +110,7 @@ public class FinalWindow extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		return id == R.id.action_settings || super.onOptionsItemSelected(item);
 	}
 
     public void finish() {

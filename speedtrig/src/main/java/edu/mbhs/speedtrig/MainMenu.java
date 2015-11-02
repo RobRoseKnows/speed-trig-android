@@ -1,5 +1,6 @@
 package edu.mbhs.speedtrig;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -8,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,33 +18,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toolbar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-
-import com.example.speedtrig.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.*;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
-import com.google.example.games.basegameutils.BaseGameUtils;
-
-import java.io.IOException;
 
 public class MainMenu extends BaseActivity /**implements
         View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener*/ {
 
-    public static enum QuizType {
-        REGULAR, INVERSE, CUSTOM;
+    public enum QuizType {
+        REGULAR, INVERSE, CUSTOM
     }
     public static QuizType quizType;
     public static final String PREFS_NAME = "MyPrefsFile1";
     public CheckBox dontShowAgain;
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
 
     /**
     private GoogleApiClient mGoogleApiClient;
@@ -90,9 +75,9 @@ public class MainMenu extends BaseActivity /**implements
         findViewById(R.id.show_leaderboard).setOnClickListener(this);
          */
 
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items); // load titles from strings.xml
+        String[] navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items); // load titles from strings.xml
 
-        navMenuIcons = getResources()
+        TypedArray navMenuIcons = getResources()
                 .obtainTypedArray(R.array.nav_drawer_icons);// load icons from
         // strings.xml
 
@@ -100,7 +85,7 @@ public class MainMenu extends BaseActivity /**implements
 
         Button quizTypeRegular = (Button) findViewById(R.id.button2);
         quizTypeRegular.setVisibility(Button.VISIBLE);
-        quizTypeRegular.setText("Regular");
+        quizTypeRegular.setText(R.string.quiz_text_regular);
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#303F9F")));
 
@@ -254,6 +239,7 @@ public class MainMenu extends BaseActivity /**implements
         Settings.quizDuration += 100;
     }
 
+    @SuppressLint("InflateParams")
 	public void startRegularDialog(View v){
 		//Toast.makeText(this, "Ready!", Toast.LENGTH_SHORT).show();
 		//Toast.makeText(this, "Set!", Toast.LENGTH_SHORT).show();
@@ -275,9 +261,8 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipRegularInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
+                editor.apply();
                 startRegular();
-                return;
             }
         });
 
@@ -290,8 +275,7 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipRegularInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
-                return;
+                editor.apply();
             }
         });
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -308,6 +292,7 @@ public class MainMenu extends BaseActivity /**implements
         startActivity(new Intent(this, ResponseWindow.class));
     }
 
+    @SuppressLint("InflateParams")
     public void startInverseDialog(View v){
         //Toast.makeText(this, "Ready!", Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Set!", Toast.LENGTH_SHORT).show();
@@ -329,9 +314,8 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipInverseInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
+                editor.apply();
                 startInverse();
-                return;
             }
         });
 
@@ -344,8 +328,7 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipInverseInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
-                return;
+                editor.apply();
             }
         });
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -361,6 +344,7 @@ public class MainMenu extends BaseActivity /**implements
         startActivity(new Intent(this, ResponseWindow.class));
     }
 
+    @SuppressLint("InflateParams")
     public void startCustomDialog(View v){
         //Toast.makeText(this, "Ready!", Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Set!", Toast.LENGTH_SHORT).show();
@@ -382,9 +366,8 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipCustomInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
+                editor.apply();
                 startCustom();
-                return;
             }
         });
 
@@ -397,8 +380,7 @@ public class MainMenu extends BaseActivity /**implements
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("skipCustomInstructions", checkBoxResult);
                 // Commit the edits!
-                editor.commit();
-                return;
+                editor.apply();
             }
         });
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -423,7 +405,7 @@ public class MainMenu extends BaseActivity /**implements
         TextView quizTypeOtherInfo = (TextView) findViewById(R.id.textView25);
 
         if(quizType.getText().equals("Regular")){
-            quizType.setText("Custom");
+            quizType.setText(R.string.quiz_text_custom);
             quizType.setOnClickListener(new Button.OnClickListener(){
 
                 @Override
@@ -432,13 +414,13 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("Adjustable");
-            quizTypeFunctions.setText("Adjustable");
-            quizTypeOtherInfo.setText("The duration/functions of a custom quiz can be modified in \"Settings\".");
+            quizTypeDuration.setText(R.string.quiz_duration_custom);
+            quizTypeFunctions.setText(R.string.quiz_functions_custom);
+            quizTypeOtherInfo.setText(R.string.quiz_info_custom);
         }
 
         else if(quizType.getText().equals("Inverse")){
-            quizType.setText("Regular");
+            quizType.setText(R.string.quiz_text_regular);
             quizType.setOnClickListener(new Button.OnClickListener(){
 
                 @Override
@@ -447,13 +429,13 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("3 min.");
-            quizTypeFunctions.setText("Non-Inverse Only");
-            quizTypeOtherInfo.setText("None.");
+            quizTypeDuration.setText(R.string.quiz_duration_regular);
+            quizTypeFunctions.setText(R.string.quiz_functions_regular);
+            quizTypeOtherInfo.setText(R.string.quiz_info_regular);
         }
 
         else if(quizType.getText().equals("Custom")){
-            quizType.setText("Inverse");
+            quizType.setText(R.string.quiz_text_inverse);
             quizType.setOnClickListener(new Button.OnClickListener(){
 
                 @Override
@@ -462,9 +444,9 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("3 min.");
-            quizTypeFunctions.setText("Inverse, Non-Inverse");
-            quizTypeOtherInfo.setText("None.");
+            quizTypeDuration.setText(R.string.quiz_duration_inverse);
+            quizTypeFunctions.setText(R.string.quiz_functions_inverse);
+            quizTypeOtherInfo.setText(R.string.quiz_info_inverse);
         }
 
     }
@@ -478,8 +460,8 @@ public class MainMenu extends BaseActivity /**implements
         TextView quizTypeOtherInfo = (TextView) findViewById(R.id.textView25);
 
         if(quizType.getText().equals("Inverse")){
-            quizType.setText("Custom");
-            quizType.setOnClickListener(new Button.OnClickListener(){
+            quizType.setText(R.string.quiz_text_custom);
+            quizType.setOnClickListener(new Button.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -487,13 +469,13 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("Adjustable");
-            quizTypeFunctions.setText("Adjustable");
-            quizTypeOtherInfo.setText("The duration/functions of a custom quiz can be modified in \"Settings\".");
+            quizTypeDuration.setText(R.string.quiz_duration_custom);
+            quizTypeFunctions.setText(R.string.quiz_functions_custom);
+            quizTypeOtherInfo.setText(R.string.quiz_info_custom);
         }
 
         else if(quizType.getText().equals("Custom")){
-            quizType.setText("Regular");
+            quizType.setText(R.string.quiz_text_regular);
             quizType.setOnClickListener(new Button.OnClickListener(){
 
                 @Override
@@ -502,13 +484,13 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("3 min.");
-            quizTypeFunctions.setText("Non-Inverse Only");
-            quizTypeOtherInfo.setText("None.");
+            quizTypeDuration.setText(R.string.quiz_duration_regular);
+            quizTypeFunctions.setText(R.string.quiz_functions_regular);
+            quizTypeOtherInfo.setText(R.string.quiz_info_regular);
         }
 
         else if(quizType.getText().equals("Regular")){
-            quizType.setText("Inverse");
+            quizType.setText(R.string.quiz_text_inverse);
             quizType.setOnClickListener(new Button.OnClickListener(){
 
                 @Override
@@ -517,21 +499,15 @@ public class MainMenu extends BaseActivity /**implements
                 }
             });
 
-            quizTypeDuration.setText("3 min.");
-            quizTypeFunctions.setText("Inverse, Non-Inverse");
-            quizTypeOtherInfo.setText("None.");
+            quizTypeDuration.setText(R.string.quiz_duration_inverse);
+            quizTypeFunctions.setText(R.string.quiz_functions_inverse);
+            quizTypeOtherInfo.setText(R.string.quiz_info_inverse);
         }
 
     }
 
     public void startSettings(View v){
-
         startActivity(new Intent(this, Settings.class));
-    }
-
-    public void startAbout(View v){
-
-        startActivity(new Intent(this, About.class));
     }
 
 	/**
@@ -545,9 +521,7 @@ public class MainMenu extends BaseActivity /**implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_menu,
-					container, false);
-			return rootView;
+            return inflater.inflate(R.layout.fragment_main_menu, container, false);
 		}
 	}
 
